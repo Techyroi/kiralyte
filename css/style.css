@@ -1442,16 +1442,14 @@ section {
   font-size: var(--font-size-sm);
 }
 
-.footer__links,
-.footer__social {
+.footer__links{
   display: flex;
   flex-direction: column;
 
   gap: var(--space-3);
 }
 
-.footer__links a,
-.footer__social a {
+.footer__links a{
   color: #A3A3A3;
 
   font-size: var(--font-size-sm);
@@ -1892,4 +1890,58 @@ section {
     transition-duration: 0.01ms !important;
   }
 
+}
+
+
+/* =========================================================
+   FOOTER SOCIAL ICONS
+   ========================================================= */
+
+.footer__social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 1.25rem;
+}
+
+.footer__social a {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+
+  font-size: 1rem;
+
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.footer__social a:hover {
+  color: var(--color-white);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.footer__social a:focus-visible {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 3px;
+}
+
+.footer__social i {
+  line-height: 1;
 }
