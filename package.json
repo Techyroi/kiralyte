@@ -1,5 +1,9 @@
 {
-  "dependencies": {
-    "boostrap": "^2.0.0"
+  "name": "kiralyte-agency-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Kiralyte Technology Solutions — Software Engineering, AI & Growth Agency",
+  "scripts": {
+    "preview": "npx --yes serve -l 4173 ."
   }
 }

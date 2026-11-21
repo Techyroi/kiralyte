@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 44" fill="none" role="img" aria-label="Kiralyte Technology Solutions">
+  <rect x="2" y="4" width="36" height="36" rx="10" fill="#f47b20"/>
+  <path d="M13 13v18M13 22l10-9M17.5 18L24 31" stroke="#16110c" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="48" y="25" fill="#ffffff" font-family="'Plus Jakarta Sans', Inter, system-ui, sans-serif" font-size="20" font-weight="800" letter-spacing="-0.03em">KIRALYTE</text>
+  <text x="49" y="37" fill="#f47b20" font-family="Inter, system-ui, sans-serif" font-size="8.5" font-weight="700" letter-spacing="0.22em">TECHNOLOGY</text>
+</svg>
