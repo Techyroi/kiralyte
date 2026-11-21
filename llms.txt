@@ -15,10 +15,15 @@ Kiralyte Technology Solutions pairs full-stack software development with data-ba
 - **Founder & AI Automation Engineer:** Abdulrasaq Shuaib — https://www.linkedin.com/in/abdulrasaq-shuaib-a65887237
 
 ## Key Pages
-- [Home & Capabilities](https://kiralyte.com/): Overview, founder story, services, process, FAQ, and project brief intake.
+- [Home & Agency Overview](https://kiralyte.com/): Story, capabilities, process, featured projects, founder spotlight, FAQ, and project brief intake.
 - [20 Featured Projects & Case Studies](https://kiralyte.com/projects.html): Complete 20-project catalog across mobile apps, Web3/fintech, e-commerce, SaaS, SEO/GEO/AEO, paid growth, and AI automation.
+- [Mobile App Development (iOS & Android)](https://kiralyte.com/mobile-apps.html): App Store & Google Play engineering, ASO, and user acquisition.
+- [SEO, GEO, AEO & Omnichannel Growth](https://kiralyte.com/growth-seo-geo-aeo.html): Search visibility, AI citations, and Google/Meta/TikTok/Pinterest/LinkedIn campaigns.
+- [AI Agents & Workflow Automation](https://kiralyte.com/ai-automation.html): Custom AI assistants, CRM routing, and operational automation.
+- [Kiralyte Academy](https://kiralyte.com/academy.html): Full-stack web, AI automation, and SaaS product development training.
 
 ## Contact
 - Email: kiralytetechnology@gmail.com
+- Book a 30-min call: https://calendly.com/kiralytetechnology/30min
 - WhatsApp / Phone: +234 802 541 8932
 - LinkedIn: https://www.linkedin.com/company/kiralyte-technology-solution

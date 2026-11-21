@@ -1,6 +1,11 @@
 (function () {
   var TOKEN_KEY = 'kiralyte_crm_token';
+  var LOCAL_KEY = 'kiralyte_local_leads';
+  var MODE_KEY = 'kiralyte_crm_mode';
+  var DEFAULT_PIN = 'kiralyte2026';
+
   var token = sessionStorage.getItem(TOKEN_KEY) || '';
+  var mode = sessionStorage.getItem(MODE_KEY) || 'api';
   var leads = [];
   var activeStatus = 'All';
   var activeLeadId = null;
@@ -26,6 +31,14 @@
     });
   }
 
+  function getLocalLeads() {
+    try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); } catch { return []; }
+  }
+
+  function saveLocalLeads(arr) {
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(arr));
+  }
+
   function showDashboard() {
     loginView.hidden = true;
     dashView.hidden = false;
@@ -36,6 +49,7 @@
   function showLogin(msg) {
     token = '';
     sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(MODE_KEY);
     loginView.hidden = false;
     dashView.hidden = true;
     logoutBtn.hidden = true;
@@ -51,13 +65,25 @@
 
   async function loadLeads() {
     listEl.innerHTML = '<p class="crm-empty">Loading visitor leads...</p>';
+    if (mode === 'local') {
+      leads = getLocalLeads();
+      updateStats();
+      renderLeads();
+      return;
+    }
     try {
       var data = await api('/api/leads');
       leads = data.leads || [];
       updateStats();
       renderLeads();
     } catch (e) {
-      if (e.message !== 'Unauthorized') listEl.innerHTML = '<p class="crm-empty">Could not load leads. Ensure Node server is running.</p>';
+      if (e.message !== 'Unauthorized') {
+        mode = 'local';
+        sessionStorage.setItem(MODE_KEY, 'local');
+        leads = getLocalLeads();
+        updateStats();
+        renderLeads();
+      }
     }
   }
 
@@ -76,12 +102,16 @@
       return [l.name, l.email, l.phone, l.service, l.budget, l.message, l.notes].join(' ').toLowerCase().indexOf(q) !== -1;
     });
 
+    var banner = mode === 'local'
+      ? '<div class="crm-empty" style="padding:14px 20px;text-align:left;border-style:solid;border-color:rgba(244,123,32,.35);color:#ffd5b0">Browser-only CRM mode (no Node backend on this port/host). For shared file-backed storage (<code>data/leads.json</code>), open <strong>http://localhost:4173/crm.html</strong> after running <code>npm start</code>.</div>'
+      : '';
+
     if (!filtered.length) {
-      listEl.innerHTML = '<div class="crm-empty">No leads match this filter yet. Visitor submissions from your website will appear here automatically.</div>';
+      listEl.innerHTML = banner + '<div class="crm-empty">No leads match this filter yet. Visitor submissions from your website will appear here automatically.</div>';
       return;
     }
 
-    listEl.innerHTML = filtered.map(function (l) {
+    listEl.innerHTML = banner + filtered.map(function (l) {
       return '<article class="card crm-row">' +
         '<div class="crm-row__main">' +
           '<div class="crm-row__head">' +
@@ -104,9 +134,19 @@
     }).join('');
   }
 
+  var lastFocusedEl = null;
+  function closeLeadModal() {
+    modal.hidden = true;
+    if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') {
+      lastFocusedEl.focus();
+      lastFocusedEl = null;
+    }
+  }
+
   function openLead(id) {
     var l = leads.find(function (x) { return x.id === id; });
     if (!l) return;
+    lastFocusedEl = document.activeElement;
     activeLeadId = id;
     document.getElementById('lead-modal-date').textContent = 'Received ' + fmtDate(l.createdAt);
     document.getElementById('lead-modal-name').textContent = l.name;
@@ -133,6 +173,8 @@
       waBtn.hidden = true;
     }
     modal.hidden = false;
+    var closeBtn = modal.querySelector('.modal__close');
+    if (closeBtn) closeBtn.focus();
   }
 
   authForm.addEventListener('submit', async function (e) {
@@ -145,13 +187,26 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pin: pin })
       });
+      var ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) throw new Error('Static host');
       var data = await res.json();
       if (!res.ok) { authErr.textContent = data.error || 'Invalid PIN'; return; }
+      mode = 'api';
       token = data.token;
+      sessionStorage.setItem(MODE_KEY, 'api');
       sessionStorage.setItem(TOKEN_KEY, token);
       showDashboard();
     } catch {
-      authErr.textContent = 'Cannot reach CRM server. Start it with: npm start';
+      /* Fallback for static hosting / Live Server (port 5500) / file:// */
+      if (pin !== DEFAULT_PIN) {
+        authErr.textContent = 'Invalid PIN (default: kiralyte2026)';
+        return;
+      }
+      mode = 'local';
+      token = 'local';
+      sessionStorage.setItem(MODE_KEY, 'local');
+      sessionStorage.setItem(TOKEN_KEY, token);
+      showDashboard();
     }
   });
 
@@ -174,20 +229,36 @@
   });
 
   document.querySelectorAll('[data-close-lead]').forEach(function (el) {
-    el.addEventListener('click', function () { modal.hidden = true; });
+    el.addEventListener('click', closeLeadModal);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !modal.hidden) closeLeadModal();
   });
 
   document.getElementById('lead-save').addEventListener('click', async function () {
     if (!activeLeadId) return;
     var status = document.getElementById('lead-status').value;
     var notes = document.getElementById('lead-notes').value;
+    if (mode === 'local') {
+      var idx = leads.findIndex(function (l) { return l.id === activeLeadId; });
+      if (idx !== -1) {
+        leads[idx].status = status;
+        leads[idx].notes = notes;
+        leads[idx].updatedAt = new Date().toISOString();
+        saveLocalLeads(leads);
+      }
+      updateStats();
+      renderLeads();
+      document.getElementById('lead-save-msg').textContent = 'Saved.';
+      return;
+    }
     var res = await api('/api/leads/' + activeLeadId, {
       method: 'PATCH',
       body: JSON.stringify({ status: status, notes: notes })
     });
     if (res.ok) {
-      var idx = leads.findIndex(function (l) { return l.id === activeLeadId; });
-      if (idx !== -1) leads[idx] = res.lead;
+      var i = leads.findIndex(function (l) { return l.id === activeLeadId; });
+      if (i !== -1) leads[i] = res.lead;
       updateStats();
       renderLeads();
       document.getElementById('lead-save-msg').textContent = 'Saved.';
@@ -196,10 +267,18 @@
 
   document.getElementById('lead-delete').addEventListener('click', async function () {
     if (!activeLeadId || !confirm('Delete this lead permanently?')) return;
+    if (mode === 'local') {
+      leads = leads.filter(function (l) { return l.id !== activeLeadId; });
+      saveLocalLeads(leads);
+      closeLeadModal();
+      updateStats();
+      renderLeads();
+      return;
+    }
     var res = await api('/api/leads/' + activeLeadId, { method: 'DELETE' });
     if (res.ok) {
       leads = leads.filter(function (l) { return l.id !== activeLeadId; });
-      modal.hidden = true;
+      closeLeadModal();
       updateStats();
       renderLeads();
     }

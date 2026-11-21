@@ -261,14 +261,48 @@
     });
   });
 
-  /* Case Study Modal (event delegation works for both index & catalog filter re-renders) */
+  /* Accessible Modal Focus Management */
   var caseModal = document.getElementById('case-modal');
   var legalModal = document.getElementById('legal-modal');
+  var activeModal = null;
+  var lastFocusedEl = null;
+
+  function getFocusable(container) {
+    return Array.prototype.slice.call(
+      container.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')
+    ).filter(function (el) { return !el.hidden && el.offsetParent !== null; });
+  }
+
+  function openModal(modal) {
+    if (!modal) return;
+    lastFocusedEl = document.activeElement;
+    activeModal = modal;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    var focusables = getFocusable(modal);
+    if (focusables.length) focusables[0].focus();
+  }
+
   function closeAllModals() {
     if (caseModal) caseModal.hidden = true;
     if (legalModal) legalModal.hidden = true;
     document.body.style.overflow = '';
+    activeModal = null;
+    if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') {
+      lastFocusedEl.focus();
+      lastFocusedEl = null;
+    }
   }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Tab' && activeModal) {
+      var focusables = getFocusable(activeModal);
+      if (!focusables.length) return;
+      var first = focusables[0], last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
 
   document.addEventListener('click', function (e) {
     var trigger = e.target.closest('[data-case]');
@@ -292,8 +326,7 @@
     var delivEl = document.getElementById('modal-deliverables');
     if (delivEl) delivEl.innerHTML = (c.deliverables || []).map(function (d) { return '<span>' + d + '</span>'; }).join('');
     document.getElementById('modal-tags').innerHTML = c.tags.map(function (t) { return '<span>' + t + '</span>'; }).join('');
-    caseModal.hidden = false;
-    document.body.style.overflow = 'hidden';
+    openModal(caseModal);
   });
 
   var modalCta = document.getElementById('modal-cta');
@@ -316,10 +349,10 @@
       if (!l || !legalModal) return;
       document.getElementById('legal-title').textContent = l.title;
       document.getElementById('legal-body').textContent = l.body;
-      legalModal.hidden = false;
-      document.body.style.overflow = 'hidden';
+      openModal(legalModal);
     });
   });
+
   document.querySelectorAll('[data-close-modal]').forEach(function (el) {
     el.addEventListener('click', closeAllModals);
   });
@@ -399,6 +432,23 @@
         }
         throw new Error('API error');
       } catch (err) {
+        try {
+          var localLeads = JSON.parse(localStorage.getItem('kiralyte_local_leads') || '[]');
+          localLeads.unshift({
+            id: 'local-' + Date.now(),
+            name: payload.name,
+            email: payload.email,
+            phone: payload.phone,
+            service: payload.service,
+            budget: payload.budget,
+            message: payload.message,
+            source: payload.source,
+            status: 'New',
+            notes: '',
+            createdAt: new Date().toISOString()
+          });
+          localStorage.setItem('kiralyte_local_leads', JSON.stringify(localLeads));
+        } catch (storageErr) {}
         var body = 'Name: ' + payload.name +
           '\nEmail: ' + payload.email +
           (payload.phone ? '\nPhone/WhatsApp: ' + payload.phone : '') +
