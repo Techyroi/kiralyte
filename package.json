@@ -1,9 +1,10 @@
 {
   "name": "kiralyte-agency-portfolio",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
-  "description": "Kiralyte Technology Solutions — Software Engineering, AI & Growth Agency",
+  "description": "Kiralyte Technology Solutions — Software Engineering, AI & Growth Agency + Lead CRM",
   "scripts": {
-    "preview": "npx --yes serve -l 4173 ."
+    "start": "node server.js",
+    "preview": "node server.js"
   }
 }

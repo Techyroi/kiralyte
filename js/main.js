@@ -364,23 +364,52 @@
     if (hh && !hh.contains(e.target)) closeNav();
   });
 
-  /* Contact form */
+  /* Contact form -> Kiralyte CRM API with mailto fallback */
   var enquiryForm = document.getElementById('enquiry');
   if (enquiryForm) {
-    enquiryForm.addEventListener('submit', function (e) {
+    enquiryForm.addEventListener('submit', async function (e) {
       e.preventDefault();
       var f = e.target, ok = document.getElementById('ok');
+      var submitBtn = f.querySelector('button[type="submit"]');
       if (!f.name.value.trim() || !f.email.validity.valid || !f.message.value.trim()) {
         ok.textContent = 'Please complete your name, a valid work email, and project details.';
         return;
       }
-      var body = 'Name: ' + f.name.value.trim() +
-        '\nEmail: ' + f.email.value.trim() +
-        '\nService: ' + f.service.value +
-        '\nBudget: ' + f.budget.value +
-        '\n\nProject Brief:\n' + f.message.value.trim();
-      location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('[' + f.budget.value + '] ' + f.service.value + ' — ' + f.name.value.trim()) + '&body=' + encodeURIComponent(body);
-      ok.textContent = 'Opening your email app with your brief. Prefer instant chat? Use WhatsApp or Copy email.';
+      var payload = {
+        name: f.name.value.trim(),
+        email: f.email.value.trim(),
+        phone: f.phone ? f.phone.value.trim() : '',
+        service: f.service.value,
+        budget: f.budget.value,
+        message: f.message.value.trim(),
+        source: location.pathname || '/'
+      };
+      if (submitBtn) submitBtn.disabled = true;
+      ok.textContent = 'Sending your project brief...';
+      try {
+        var res = await fetch('/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          f.reset();
+          ok.textContent = 'Received! Your project brief is saved in our CRM—we will reply within 1 business day.';
+          return;
+        }
+        throw new Error('API error');
+      } catch (err) {
+        var body = 'Name: ' + payload.name +
+          '\nEmail: ' + payload.email +
+          (payload.phone ? '\nPhone/WhatsApp: ' + payload.phone : '') +
+          '\nService: ' + payload.service +
+          '\nBudget: ' + payload.budget +
+          '\n\nProject Brief:\n' + payload.message;
+        location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('[' + payload.budget + '] ' + payload.service + ' — ' + payload.name) + '&body=' + encodeURIComponent(body);
+        ok.textContent = 'Opening your email app with your brief. Prefer instant chat? Use WhatsApp or Copy email.';
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
     });
   }
 })();

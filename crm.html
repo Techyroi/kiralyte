@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Kiralyte CRM | Visitor Leads &amp; Enquiries</title>
+<link rel="icon" type="image/jpeg" href="./assets/images/favicon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="crm-body">
+<header class="hh is-scrolled">
+  <nav class="nav container" aria-label="CRM navigation">
+    <a href="index.html" class="nav__logo" aria-label="Kiralyte home">
+      <img src="./assets/images/logo-horizontal.png" alt="Kiralyte Technology Solutions" width="160" height="34">
+    </a>
+    <div class="crm-nav-actions">
+      <a href="index.html" class="btn btn--g btn--sm">View Website</a>
+      <button type="button" class="btn btn--g btn--sm" id="crm-logout" hidden>Log out</button>
+    </div>
+  </nav>
+</header>
+
+<main class="crm-main container">
+  <!-- Login Gate -->
+  <section id="crm-login-view" class="crm-login">
+    <span class="eb">Private Workspace</span>
+    <h1>Kiralyte Lead CRM</h1>
+    <p>Enter your CRM PIN to view visitor enquiries, messages, project briefs, and follow-up status.</p>
+    <form id="crm-auth-form" class="crm-auth-form">
+      <div>
+        <label for="crm-pin">Admin PIN</label>
+        <input id="crm-pin" type="password" required placeholder="Enter CRM PIN (default: kiralyte2026)" autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn--p">Unlock CRM</button>
+      <p id="crm-auth-err" class="crm-err" role="alert"></p>
+    </form>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="crm-dashboard" hidden>
+    <div class="crm-top">
+      <div>
+        <span class="eb">Visitor Pipeline</span>
+        <h1>Client Leads &amp; Messages</h1>
+      </div>
+      <div class="crm-top-btns">
+        <button type="button" class="btn btn--g btn--sm" id="crm-refresh">Refresh</button>
+        <button type="button" class="btn btn--p btn--sm" id="crm-export">Export CSV</button>
+      </div>
+    </div>
+
+    <div class="crm-stats">
+      <div class="card crm-stat"><b id="stat-total">0</b><span>Total Leads</span></div>
+      <div class="card crm-stat"><b id="stat-new">0</b><span>New</span></div>
+      <div class="card crm-stat"><b id="stat-qualified">0</b><span>Qualified</span></div>
+      <div class="card crm-stat"><b id="stat-won">0</b><span>Won</span></div>
+    </div>
+
+    <div class="crm-toolbar">
+      <input type="search" id="crm-search" placeholder="Search by name, email, phone, service, or message..." aria-label="Search leads">
+      <div class="crm-filters" role="tablist" aria-label="Filter leads by status">
+        <button type="button" class="filter-btn is-active" data-status="All">All</button>
+        <button type="button" class="filter-btn" data-status="New">New</button>
+        <button type="button" class="filter-btn" data-status="Contacted">Contacted</button>
+        <button type="button" class="filter-btn" data-status="Qualified">Qualified</button>
+        <button type="button" class="filter-btn" data-status="Won">Won</button>
+        <button type="button" class="filter-btn" data-status="Archived">Archived</button>
+      </div>
+    </div>
+
+    <div id="crm-list" class="crm-list"></div>
+  </section>
+</main>
+
+<!-- Lead Detail Modal -->
+<div class="modal" id="lead-modal" role="dialog" aria-modal="true" aria-labelledby="lead-modal-name" hidden>
+  <div class="modal__backdrop" data-close-lead></div>
+  <div class="modal__box">
+    <button type="button" class="modal__close" data-close-lead aria-label="Close lead details">×</button>
+    <span class="eb" id="lead-modal-date"></span>
+    <h3 id="lead-modal-name"></h3>
+    <div class="crm-meta-grid">
+      <div><strong>Email:</strong> <a id="lead-modal-email" href="#"></a></div>
+      <div><strong>Phone / WhatsApp:</strong> <span id="lead-modal-phone">—</span></div>
+      <div><strong>Service:</strong> <span id="lead-modal-service"></span></div>
+      <div><strong>Budget:</strong> <span id="lead-modal-budget"></span></div>
+    </div>
+    <div class="crm-message-box">
+      <h4>Visitor Message</h4>
+      <p id="lead-modal-message"></p>
+    </div>
+    <div class="crm-edit-grid">
+      <div>
+        <label for="lead-status">Pipeline Status</label>
+        <select id="lead-status">
+          <option value="New">New</option>
+          <option value="Contacted">Contacted</option>
+          <option value="Qualified">Qualified</option>
+          <option value="Won">Won</option>
+          <option value="Archived">Archived</option>
+        </select>
+      </div>
+      <div>
+        <label for="lead-notes">Internal Notes</label>
+        <textarea id="lead-notes" placeholder="Call notes, next follow-up date, proposal link..."></textarea>
+      </div>
+    </div>
+    <div class="crm-modal-actions">
+      <button type="button" class="btn btn--p btn--sm" id="lead-save">Save Changes</button>
+      <a class="btn btn--g btn--sm" id="lead-reply-email" href="#">Reply via Email</a>
+      <a class="btn btn--g btn--sm" id="lead-reply-wa" href="#" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      <button type="button" class="btn btn--danger btn--sm" id="lead-delete">Delete</button>
+    </div>
+    <p id="lead-save-msg" class="crm-save-msg" role="status"></p>
+  </div>
+</div>
+
+<script src="js/crm.js" defer></script>
+</body>
+</html>
