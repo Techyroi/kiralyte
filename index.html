@@ -46,6 +46,7 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#process">Process</a></li>
         <li><a href="#projects">Work</a></li>
+        <li><a href="projects.html">All 20 Projects</a></li>
         <li><a href="#founder">Founder</a></li>
         <li><a href="#course">Academy</a></li>
       </ul>
@@ -241,57 +242,12 @@
     <div class="container">
       <div class="head">
         <span class="eb rv">Selected work</span>
-        <h2 class="split">Products built to perform in the market.</h2>
-        <p class="lead rv" style="--i:1">Click any project to inspect the architecture, deliverables, and growth setup.</p>
+        <h2 class="split">Flagship products built to perform.</h2>
+        <p class="lead rv" style="--i:1">A curated preview across mobile apps, Web3, e-commerce, AI &amp; SaaS. Click any project to inspect the case study—or browse all 20 builds.</p>
       </div>
-      <div class="proj">
-        <article class="pc rv">
-          <button type="button" class="pc__trigger" data-case="restaurant" aria-label="View Food Delivery & Restaurant Platform case study">
-            <div class="ph ph--device">
-              <span class="pc__cat">Mobile App · iOS &amp; Android</span>
-              <div class="phone-frame">
-                <img src="./assets/images/restaurant-app.png" alt="Restaurant ordering and delivery mobile application interface" loading="lazy">
-              </div>
-            </div>
-            <div class="pc__body">
-              <h3>Restaurant &amp; Delivery Platform</h3>
-              <p>End-to-end ordering, kitchen dispatch, and live rider tracking built for fast mobile conversion and store launch.</p>
-              <div class="tags"><span>Mobile App</span><span>Real-time API</span><span>UX/UI</span></div>
-              <span class="more">Inspect case study <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </div>
-          </button>
-        </article>
-
-        <article class="pc rv" style="--i:1">
-          <button type="button" class="pc__trigger" data-case="quizmaster" aria-label="View QuizMaster AI Learning Platform case study">
-            <div class="ph">
-              <span class="pc__cat">AI · EdTech Web App</span>
-              <img src="./assets/images/quizmasterapp.png" alt="QuizMaster intelligent assessment platform interface" loading="lazy">
-            </div>
-            <div class="pc__body">
-              <h3>QuizMaster AI Platform</h3>
-              <p>Interactive assessment engine with automated question generation, instant scoring, and retention-driven UX.</p>
-              <div class="tags"><span>Python</span><span>AI Engine</span><span>Responsive Web</span></div>
-              <span class="more">Inspect case study <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </div>
-          </button>
-        </article>
-
-        <article class="pc rv" style="--i:2">
-          <button type="button" class="pc__trigger" data-case="saas" aria-label="View SaaS Operations & Growth Suite case study">
-            <div class="ph">
-              <span class="pc__cat">SaaS · Cloud &amp; Automation</span>
-              <img src="./assets/images/saas.jpg" alt="SaaS business operations and analytics platform" loading="lazy">
-            </div>
-            <div class="pc__body">
-              <h3>SaaS Operations &amp; Analytics Suite</h3>
-              <p>Centralized cloud workspace automating team workflows, client reporting, and multi-channel attribution.</p>
-              <div class="tags"><span>SaaS</span><span>Automation</span><span>Analytics</span></div>
-              <span class="card-spacer"></span>
-              <span class="more">Inspect case study <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-            </div>
-          </button>
-        </article>
+      <div class="proj" id="featured-projects-grid"></div>
+      <div class="proj-more-wrap rv">
+        <a href="projects.html" class="btn btn--p">Explore all 20 projects &amp; deliverables <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
@@ -393,8 +349,8 @@
         <p class="lead rv" style="--i:1;margin-top:20px">Tell us what you’re building or where growth has stalled. We respond to every qualified enquiry within 1 business day.</p>
         <div class="dt rv" style="--i:2">
           <div class="dt__row">
-            <a href="mailto:hello@kiralyte.com"><span>Direct Email</span>hello@kiralyte.com</a>
-            <button type="button" class="copy-btn" id="copy-email" aria-label="Copy hello@kiralyte.com">Copy</button>
+            <a href="mailto:kiralytetechnology@gmail.com"><span>Direct Email</span>kiralytetechnology@gmail.com</a>
+            <button type="button" class="copy-btn" id="copy-email" aria-label="Copy kiralytetechnology@gmail.com">Copy</button>
           </div>
           <a href="https://wa.me/2348025418932" target="_blank" rel="noopener noreferrer"><span>WhatsApp &amp; Direct Line</span>+234 802 541 8932</a>
           <a href="https://www.linkedin.com/in/abdulrasaq-shuaib-a65887237" target="_blank" rel="noopener noreferrer"><span>Founder LinkedIn</span>Abdulrasaq Shuaib</a>
@@ -465,7 +421,7 @@
       <div class="footer__links">
         <a href="#about">Story</a>
         <a href="#services">Services</a>
-        <a href="#projects">Work</a>
+        <a href="projects.html">All 20 Projects</a>
         <a href="#founder">Founder</a>
         <a href="#course">Academy</a>
         <a href="#contact">Contact</a>
@@ -492,7 +448,7 @@
 <div class="sticky-contact">
   <div class="sticky-contact__options" id="sticky-menu">
     <a href="https://wa.me/2348025418932" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
-    <button type="button" data-copy="hello@kiralyte.com">Copy email</button>
+    <button type="button" data-copy="kiralytetechnology@gmail.com">Copy email</button>
     <a href="#contact">Send project brief</a>
     <a href="tel:+2348025418932">Call +234 802 541 8932</a>
   </div>
@@ -508,10 +464,14 @@
     <button type="button" class="modal__close" data-close-modal aria-label="Close modal">×</button>
     <span class="eb" id="modal-cat"></span>
     <h3 id="modal-title"></h3>
-    <div class="modal__img"><img id="modal-img" src="" alt=""></div>
+    <div class="modal__img" id="modal-img-wrap"><img id="modal-img" src="" alt=""></div>
     <div class="modal__grid">
       <div><h4>The Challenge</h4><p id="modal-challenge"></p></div>
       <div><h4>What We Built &amp; Scaled</h4><p id="modal-solution"></p></div>
+    </div>
+    <div class="modal__deliverables">
+      <h4>Deliverables</h4>
+      <div class="tags" id="modal-deliverables"></div>
     </div>
     <div class="tags" id="modal-tags"></div>
     <div class="modal__foot">
@@ -529,6 +489,7 @@
   </div>
 </div>
 
+<script src="js/projects-data.js" defer></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>
