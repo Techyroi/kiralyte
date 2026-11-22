@@ -27,15 +27,22 @@
 <main class="crm-main container">
   <!-- Login Gate -->
   <section id="crm-login-view" class="crm-login">
-    <span class="eb">Private Workspace</span>
+    <span class="eb">Cloud CRM</span>
     <h1>Kiralyte Lead CRM</h1>
-    <p>Enter your CRM PIN to view visitor enquiries, messages, project briefs, and follow-up status.</p>
+    <p>Sign in with your authorized admin email (<code>kiralytetechnology@gmail.com</code> or <code>halatworld@gmail.com</code>) to manage visitor leads from anywhere.</p>
     <form id="crm-auth-form" class="crm-auth-form">
       <div>
-        <label for="crm-pin">Admin PIN</label>
-        <input id="crm-pin" type="password" required placeholder="Enter CRM PIN (default: kiralyte2026)" autocomplete="current-password">
+        <label for="crm-email">Admin Email</label>
+        <input id="crm-email" type="email" required value="kiralytetechnology@gmail.com" autocomplete="email">
       </div>
-      <button type="submit" class="btn btn--p">Unlock CRM</button>
+      <div>
+        <label for="crm-password">Password</label>
+        <input id="crm-password" type="password" required minlength="6" placeholder="Enter your password" autocomplete="current-password">
+      </div>
+      <div class="crm-top-btns">
+        <button type="submit" class="btn btn--p">Sign in</button>
+        <button type="button" class="btn btn--g btn--sm" id="crm-register">First-time setup (Create password)</button>
+      </div>
       <p id="crm-auth-err" class="crm-err" role="alert"></p>
     </form>
   </section>
@@ -44,7 +51,7 @@
   <section id="crm-dashboard" hidden>
     <div class="crm-top">
       <div>
-        <span class="eb">Visitor Pipeline</span>
+        <span class="eb">Live Firestore Pipeline</span>
         <h1>Client Leads &amp; Messages</h1>
       </div>
       <div class="crm-top-btns">
@@ -119,6 +126,10 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
+<script src="js/firebase-config.js" defer></script>
 <script src="js/crm.js" defer></script>
 </body>
 </html>

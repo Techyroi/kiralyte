@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /leads/{leadId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 3
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0;
+      allow read, update, delete: if request.auth != null
+        && (request.auth.token.email == 'kiralytetechnology@gmail.com'
+            || request.auth.token.email == 'halatworld@gmail.com');
+    }
+  }
+}

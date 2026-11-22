@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /crm.html
 
 # Allow AI Search & Answer Engines (GEO / AEO)
 User-agent: OAI-SearchBot

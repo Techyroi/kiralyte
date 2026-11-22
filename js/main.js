@@ -397,7 +397,7 @@
     if (hh && !hh.contains(e.target)) closeNav();
   });
 
-  /* Contact form -> Kiralyte CRM API with mailto fallback */
+  /* Contact form -> Firebase Firestore (works on GitHub Pages) with Node API fallback */
   var enquiryForm = document.getElementById('enquiry');
   if (enquiryForm) {
     enquiryForm.addEventListener('submit', async function (e) {
@@ -415,48 +415,33 @@
         service: f.service.value,
         budget: f.budget.value,
         message: f.message.value.trim(),
-        source: location.pathname || '/'
+        source: location.pathname || '/',
+        status: 'New',
+        notes: '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
       if (submitBtn) submitBtn.disabled = true;
       ok.textContent = 'Sending your project brief...';
       try {
-        var res = await fetch('/api/leads', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          f.reset();
-          ok.textContent = 'Received! Your project brief is saved in our CRM—we will reply within 1 business day.';
-          return;
+        var saved = false;
+        if (window.firebase && window.KIRALYTE_FIREBASE_CONFIG) {
+          if (!firebase.apps.length) firebase.initializeApp(window.KIRALYTE_FIREBASE_CONFIG);
+          await firebase.firestore().collection('leads').add(payload);
+          saved = true;
         }
-        throw new Error('API error');
-      } catch (err) {
-        try {
-          var localLeads = JSON.parse(localStorage.getItem('kiralyte_local_leads') || '[]');
-          localLeads.unshift({
-            id: 'local-' + Date.now(),
-            name: payload.name,
-            email: payload.email,
-            phone: payload.phone,
-            service: payload.service,
-            budget: payload.budget,
-            message: payload.message,
-            source: payload.source,
-            status: 'New',
-            notes: '',
-            createdAt: new Date().toISOString()
+        if (!saved) {
+          var res = await fetch('/api/leads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
           });
-          localStorage.setItem('kiralyte_local_leads', JSON.stringify(localLeads));
-        } catch (storageErr) {}
-        var body = 'Name: ' + payload.name +
-          '\nEmail: ' + payload.email +
-          (payload.phone ? '\nPhone/WhatsApp: ' + payload.phone : '') +
-          '\nService: ' + payload.service +
-          '\nBudget: ' + payload.budget +
-          '\n\nProject Brief:\n' + payload.message;
-        location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('[' + payload.budget + '] ' + payload.service + ' — ' + payload.name) + '&body=' + encodeURIComponent(body);
-        ok.textContent = 'Opening your email app with your brief. Prefer instant chat? Use WhatsApp or Copy email.';
+          if (!res.ok) throw new Error('API error');
+        }
+        f.reset();
+        ok.textContent = 'Received! Your project brief is saved in our CRM—we will reply within 1 business day.';
+      } catch (err) {
+        ok.textContent = 'Could not submit right now. Please email kiralytetechnology@gmail.com or message us on WhatsApp.';
       } finally {
         if (submitBtn) submitBtn.disabled = false;
       }
