@@ -23,3 +23,6 @@ Thumbs.db
 
 # CRM lead data (keep visitor PII private)
 data/leads.json
+
+# Firebase client config
+js/firebase-config.js
