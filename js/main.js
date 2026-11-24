@@ -357,6 +357,30 @@
     el.addEventListener('click', closeAllModals);
   });
 
+  /* Seamless Calendly Popup + GTM/Clarity Conversion Tracking */
+  var CALENDLY_URL = 'https://calendly.com/kiralytetechnology/30min';
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('a[href*="calendly.com/"]');
+    if (!link) return;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'booking_modal_opened', booking_url: link.href });
+    if (typeof window.clarity === 'function') window.clarity('event', 'booking_modal_opened');
+    if (window.Calendly && typeof window.Calendly.initPopupWidget === 'function') {
+      e.preventDefault();
+      closeNav();
+      closeSticky();
+      window.Calendly.initPopupWidget({ url: link.href || CALENDLY_URL });
+    }
+  });
+
+  window.addEventListener('message', function (e) {
+    if (e.origin === 'https://calendly.com' && e.data && e.data.event === 'calendly.event_scheduled') {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'strategy_call_booked', calendly_event: e.data.payload });
+      if (typeof window.clarity === 'function') window.clarity('event', 'strategy_call_booked');
+    }
+  });
+
   /* Copy email helper */
   function copyText(text, btn) {
     if (!navigator.clipboard) return;

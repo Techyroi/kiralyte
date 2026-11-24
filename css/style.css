@@ -260,6 +260,8 @@ textarea{min-height:118px;resize:vertical}
 .sticky-contact svg{width:20px;height:20px;stroke:#16110c;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
 
 /* modal */
+.calendly-overlay{z-index:999999!important;position:fixed!important;inset:0!important}
+.calendly-popup{z-index:1000000!important}
 .modal{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:20px}
 .modal[hidden]{display:none}
 .modal__backdrop{position:absolute;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(6px)}
